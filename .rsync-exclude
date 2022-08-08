@@ -1,0 +1,9 @@
+.git*
+/build/*
+/dev/*
+/deploy/*
+/var/*
+/vendor/*
+/media/*
+/crons/*
+/pub/media/*
