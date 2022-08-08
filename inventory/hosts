@@ -1,0 +1,7 @@
+[elsevier]
+10.1.136.230
+
+[elsevier:vars]
+ansible_user= elsevier
+ansible_password= aUynL@9yVP2h
+

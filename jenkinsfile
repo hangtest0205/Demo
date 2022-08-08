@@ -1,0 +1,18 @@
+node {
+    def = env.ANSIBLE_INVENTORY = "inventory/hosts"
+    def = env.ANSIBLE_PLAYBOOK = "appspec.yml"
+        stage('Checkout SCM') {
+            cleanWs()
+            Checkout scm
+        }
+        stage('Build') {
+            sh 'deploy-scripts/app-deploy.sh"'
+        }
+        stage('Deploy-ansible') {
+            sh ""
+            ansible-playbook -i $ANSIBLE_INVENTORY $ANSIBLE_PLAYBOOK --extra-vars
+            ""
+        }
+
+
+    }
