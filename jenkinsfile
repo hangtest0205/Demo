@@ -1,5 +1,7 @@
 node {
         stage('Build') {
-            sh 'deploy-scripts/app-deploy.sh"'
+            sh '''
+		"deploy-scripts/app-deploy.sh"
+	       '''
         }
     }
