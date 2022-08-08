@@ -1,6 +1,6 @@
 node {
-    def = env.ANSIBLE_INVENTORY = "inventory/hosts"
-    def = env.ANSIBLE_PLAYBOOK = "appspec.yml"
+    def ANSIBLE_INVENTORY = "inventory/hosts"
+    def ANSIBLE_PLAYBOOK = "appspec.yml"
         stage('Checkout SCM') {
             cleanWs()
             Checkout scm
