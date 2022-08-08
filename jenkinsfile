@@ -10,7 +10,7 @@ node {
         }
         stage('Deploy-ansible') {
             sh ""
-            ansible-playbook -i $ANSIBLE_INVENTORY $ANSIBLE_PLAYBOOK --extra-vars
+            ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOK} --extra-vars
             ""
         }
 
