@@ -38,9 +38,9 @@ jobs:
           projectBaseDir: .
           args: >
             -Dsonar.host.url=https://sonarcloud.io
-            -Dsonar.organization=centraltechnology
-            -Dsonar.projectKey=tops-mdc23
-            -Dsonar.projectName=tops-mdc23
+            -Dsonar.organization=elsevier
+            -Dsonar.projectKey=elsevier
+            -Dsonar.projectName=elsevier
             -Dsonar.sources=app/code/SmartOsc
             -Dsonar.language=php
             -Dsonar.sourceEncoding=UTF-8
