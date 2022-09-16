@@ -1,13 +1,10 @@
 name: CI
 
 on:
-  
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
- # workflow_dispatch:
+    branches:
+     - main
+  workflow_dispatch:
 
 jobs:
  
@@ -16,12 +13,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: Run a one-line script
-        run: echo Hello, world!
-
       
-      - name: Run a multi-line script
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: /tmp/composer-cache
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+
+      - name: BUILD
+        env:
+          AUTH_JSON_GH: ${{ secrets.AUTH_JSON_BB }}
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          echo $AUTH_JSON_GH > auth.json
+          apt-get update && apt-get install -y openssh-client
+          curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=1.10.1
+          composer install
+          bin/magento setup:di:compile
+      - name: Analyze with SonarCloud
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.organization=centraltechnology
+            -Dsonar.projectKey=tops-mdc23
+            -Dsonar.projectName=tops-mdc23
+            -Dsonar.sources=app/code/SmartOsc
+            -Dsonar.language=php
+            -Dsonar.sourceEncoding=UTF-8
+            -Dsonar.php.exclusions=**/abc/**
+            -Dsonar.scm.disabled=true
+            -Dsonar.branch.name=main
+
