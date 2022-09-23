@@ -1,28 +1,24 @@
-name: CI
+name: Update blog posts
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [m]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-
-      - name: BUILD
-        env:
-          AUTH_JSON_GH: ${{ secrets.AUTH_JSON_BB }}
-        run: |
-          echo $AUTH_JSON_GH > auth.json
-          apt-get update && apt-get install -y openssh-client
-          curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=1.10.1
-          composer install
-          bin/magento setup:di:compile
-        
-      - name: Run code quality elsevier
-        run: vendor/bin/phpcs --standard=magento-coding-standard/magento-coding-standard/Magento2 app/code/SmartOsc/
-      
+    - name: Clone repository
+      uses: actions/checkout@v2
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.2'
+    - name: Install Composer dependencies
+      run: composer install
+    - name: Insert blog posts
+      run: php posts.php
+    - name: Push changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Updated latest blog posts
