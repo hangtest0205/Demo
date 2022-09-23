@@ -2,23 +2,16 @@ name: CI
 
 on:
   push:
-    branches:
-     - main
-  workflow_dispatch:
+    branches: [main]
+  pull_request:
+    branches: [m]
 
 jobs:
- 
   build:
-   
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
-      
-      - name: Cache Composer dependencies
-        uses: actions/cache@v2
-        with:
-          path: /tmp/composer-cache
-          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
 
       - name: BUILD
         env:
@@ -29,22 +22,7 @@ jobs:
           curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=1.10.1
           composer install
           bin/magento setup:di:compile
-      - name: Analyze with SonarCloud
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          projectBaseDir: .
-          args: >
-            -Dsonar.host.url=https://sonarcloud.io
-            -Dsonar.organization=elsevier
-            -Dsonar.projectKey=elsevier
-            -Dsonar.projectName=elsevier
-            -Dsonar.sources=app/code/SmartOsc
-            -Dsonar.language=php
-            -Dsonar.sourceEncoding=UTF-8
-            -Dsonar.php.exclusions=**/abc/**
-            -Dsonar.scm.disabled=true
-            -Dsonar.branch.name=main
-
+        
+      - name: Run code quality elsevier
+        run: vendor/bin/phpcs --standard=magento-coding-standard/magento-coding-standard/Magento2 app/code/SmartOsc/
+      
